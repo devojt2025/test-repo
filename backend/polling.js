@@ -14,9 +14,10 @@ function ensureDirectoryExists(dirPath) {
 function pullLatestCode() {
     console.log('Checking for updates...');
     exec(`
-        cd ${repoDirectory} && git pull &&
-        cd frontend && npm install && npm run build &&
-        cd ../backend && npm install && pm2 restart app
+        cd ${repoDirectory}; git pull;
+        cd frontend ; npm install ; npm run build ;
+        cd ../backend ; npm install ; pm2 restart app ;
+        cd C:/nginx ; nginx.exe -s reload
         `, (err, stdout, stderr) => {
         if (err) {
             console.error(`Error pulling code: ${stderr}`);
@@ -28,11 +29,10 @@ function pullLatestCode() {
     })
 }
 
-cron.schedule('*/10 * * * *', () => {
+cron.schedule('*/1 * * * *', () => {
     if (ensureDirectoryExists(path.join(repoDirectory, 'frontend')) &&
         ensureDirectoryExists(path.join(repoDirectory, 'backend'))) {
         pullLatestCode();
         console.log('Git pull job ran at ' + new Date().toLocaleDateString());
     }
-
 })
